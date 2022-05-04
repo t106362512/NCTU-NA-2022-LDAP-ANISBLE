@@ -1,0 +1,103 @@
+#
+# Base top obj
+#
+
+dn: {{ openldap_mdb_suffix }}
+objectClass: top
+objectClass: dcObject
+objectClass: domain
+
+dn: ou=People,{{ openldap_mdb_suffix }}
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=OSGroups,{{ openldap_mdb_suffix }}
+objectClass: top
+objectclass: organizationalUnit
+ou: OSGroups
+
+
+#
+# User
+#
+
+dn: cn=Ta1,ou=People,{{ openldap_mdb_suffix }}
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: ldapPublicKey
+sn: ta1
+uid: Ta1
+uidNumber: 10001
+gidNumber: 10000
+homeDirectory: /tmp/
+sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCS2CaGnAt5/3Ah413rWU3ZszkWKzYJNdIT/qhcxpM5bDMDZKUrQWZBoZqWpF/aYB0oEU6yhSHy1ZXPAfQU5hllKQJwnGjjX6g/GKWkK9vHabm9g8lHTNE4b+DVvv2ENqh0jM9B8dAqQWXab1Vs59/Fz4INEmOLr+LbppK18yziYBs508dN2TjaY4D8htLm7eV872NLwFZ7jg8NxldFsbBbAq+uEvfh9AxeYQvPQTCu7c1wymLxK7h8VcVfOtggaJXiQG3Kc86jZKicng/EAZmS/DfR/EgGBesB2VCwtBg1OaqBcPgM01ZiV9kwEhITwugihY2A6FiE8EAQMVVKCGDJwhdZzZ/rofy3GLFwvHrOu0zZuhSq1nabnntHQWiWGSXtJBd9dK3sFfcm0OZOYrvlPTdHcIzNBgdMyRbt/Qt/DrKdGapDrv1yw8JMcM8TbzNo18SKVsvfKUd9fvPj2yaP6JRa7CTYv8vth1jpzL43lJJPKkF+g3OpX142SG1uTtM= ta
+userPassword: {{ openldap_admin_sha.stdout }}
+loginShell: /bin/bash
+
+dn: cn=Ta2,ou=People,{{ openldap_mdb_suffix }}
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: ldapPublicKey
+sn: ta2
+uid: Ta2
+uidNumber: 10002
+gidNumber: 10000
+homeDirectory: /tmp/
+sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCS2CaGnAt5/3Ah413rWU3ZszkWKzYJNdIT/qhcxpM5bDMDZKUrQWZBoZqWpF/aYB0oEU6yhSHy1ZXPAfQU5hllKQJwnGjjX6g/GKWkK9vHabm9g8lHTNE4b+DVvv2ENqh0jM9B8dAqQWXab1Vs59/Fz4INEmOLr+LbppK18yziYBs508dN2TjaY4D8htLm7eV872NLwFZ7jg8NxldFsbBbAq+uEvfh9AxeYQvPQTCu7c1wymLxK7h8VcVfOtggaJXiQG3Kc86jZKicng/EAZmS/DfR/EgGBesB2VCwtBg1OaqBcPgM01ZiV9kwEhITwugihY2A6FiE8EAQMVVKCGDJwhdZzZ/rofy3GLFwvHrOu0zZuhSq1nabnntHQWiWGSXtJBd9dK3sFfcm0OZOYrvlPTdHcIzNBgdMyRbt/Qt/DrKdGapDrv1yw8JMcM8TbzNo18SKVsvfKUd9fvPj2yaP6JRa7CTYv8vth1jpzL43lJJPKkF+g3OpX142SG1uTtM= ta
+userPassword: {{ openldap_admin_sha.stdout }}
+loginShell: /bin/bash
+
+
+dn: cn=Stu1,ou=People,{{ openldap_mdb_suffix }}
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: ldapPublicKey
+sn: stu1
+uid: Stu1
+uidNumber: 20001
+gidNumber: 20000
+homeDirectory: /home/stu1
+sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCS2CaGnAt5/3Ah413rWU3ZszkWKzYJNdIT/qhcxpM5bDMDZKUrQWZBoZqWpF/aYB0oEU6yhSHy1ZXPAfQU5hllKQJwnGjjX6g/GKWkK9vHabm9g8lHTNE4b+DVvv2ENqh0jM9B8dAqQWXab1Vs59/Fz4INEmOLr+LbppK18yziYBs508dN2TjaY4D8htLm7eV872NLwFZ7jg8NxldFsbBbAq+uEvfh9AxeYQvPQTCu7c1wymLxK7h8VcVfOtggaJXiQG3Kc86jZKicng/EAZmS/DfR/EgGBesB2VCwtBg1OaqBcPgM01ZiV9kwEhITwugihY2A6FiE8EAQMVVKCGDJwhdZzZ/rofy3GLFwvHrOu0zZuhSq1nabnntHQWiWGSXtJBd9dK3sFfcm0OZOYrvlPTdHcIzNBgdMyRbt/Qt/DrKdGapDrv1yw8JMcM8TbzNo18SKVsvfKUd9fvPj2yaP6JRa7CTYv8vth1jpzL43lJJPKkF+g3OpX142SG1uTtM= ta
+userPassword: {{ openldap_admin_sha.stdout }}
+loginShell: /bin/bash
+
+dn: cn=Stu2,ou=People,{{ openldap_mdb_suffix }}
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: ldapPublicKey
+sn: stu2
+uid: Stu2
+uidNumber: 20002
+gidNumber: 20000
+homeDirectory: /home/stu2
+sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCS2CaGnAt5/3Ah413rWU3ZszkWKzYJNdIT/qhcxpM5bDMDZKUrQWZBoZqWpF/aYB0oEU6yhSHy1ZXPAfQU5hllKQJwnGjjX6g/GKWkK9vHabm9g8lHTNE4b+DVvv2ENqh0jM9B8dAqQWXab1Vs59/Fz4INEmOLr+LbppK18yziYBs508dN2TjaY4D8htLm7eV872NLwFZ7jg8NxldFsbBbAq+uEvfh9AxeYQvPQTCu7c1wymLxK7h8VcVfOtggaJXiQG3Kc86jZKicng/EAZmS/DfR/EgGBesB2VCwtBg1OaqBcPgM01ZiV9kwEhITwugihY2A6FiE8EAQMVVKCGDJwhdZzZ/rofy3GLFwvHrOu0zZuhSq1nabnntHQWiWGSXtJBd9dK3sFfcm0OZOYrvlPTdHcIzNBgdMyRbt/Qt/DrKdGapDrv1yw8JMcM8TbzNo18SKVsvfKUd9fvPj2yaP6JRa7CTYv8vth1jpzL43lJJPKkF+g3OpX142SG1uTtM= ta
+userPassword: {{ openldap_admin_sha.stdout }}
+loginShell: /bin/bash
+
+
+#
+# OSGroups
+#
+
+dn: cn=Admin,ou=OSGroups,{{ openldap_mdb_suffix }}
+cn: Admin
+objectClass: posixGroup
+gidNumber: 10000
+
+dn: cn=Worker,ou=OSGroups,{{ openldap_mdb_suffix }}
+cn: Worker
+objectClass: posixGroup
+gidNumber: 20000

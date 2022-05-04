@@ -1,0 +1,36 @@
+#
+# Overlay ppolicy for nasa lmdb
+#
+
+dn: olcOverlay={2}ppolicy,olcDatabase={3}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcPPolicyConfig
+objectClass: olcConfig
+objectClass: top
+olcOverlay: {2}ppolicy
+olcPPolicyDefault: cn=ppolicy,{{ openldap_mdb_suffix }}
+olcPPolicyHashCleartext: TRUE
+olcPPolicyUseLockout: FALSE
+olcPPolicyForwardUpdates: FALSE
+
+
+dn: cn=ppolicy,{{ openldap_mdb_suffix }}
+objectClass: device
+objectClass: pwdPolicyChecker
+objectClass: pwdPolicy
+cn: ppolicy
+pwdAttribute: userPassword
+pwdCheckQuality: 1
+pwdMinAge: 0
+pwdMaxAge: 0
+pwdMaxFailure: 5
+pwdFailureCountInterval: 0
+pwdLockoutDuration: 10
+pwdAllowUserChange: TRUE
+pwdMustChange: FALSE
+pwdGraceAuthNLimit: 0
+pwdLockout: TRUE
+pwdInHistory: 3
+pwdSafeModify: FALSE
+pwdExpireWarning: 0
+pwdMinLength: 8

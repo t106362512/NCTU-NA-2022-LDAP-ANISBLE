@@ -1,0 +1,22 @@
+---
+- hosts: ldapservers
+  become: true
+  roles:
+    - ldap.server
+    - push.ca-cert
+
+- hosts: ldapprovider
+  become: true
+  roles:
+    - generate.cert
+    - ldap.master
+
+- hosts: ldapclients
+  become: true
+  roles:
+    - push.ca-cert
+
+- hosts: all
+  become: true
+  roles:
+    - ldap.client

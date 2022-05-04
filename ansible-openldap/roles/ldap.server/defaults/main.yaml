@@ -1,0 +1,9 @@
+openldap_packages:
+  - openldap
+  - openldap-*
+  # - lmdb
+  # - lmdb-*
+  - nscd
+  - nss-*
+  - pcre
+  - pcre-*

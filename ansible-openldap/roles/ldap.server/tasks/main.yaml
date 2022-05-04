@@ -1,0 +1,34 @@
+---
+- name: Install epel-release
+  package:
+    name:
+      - epel-release
+      # - dnf-plugins-core
+    state: present
+
+- name: Enable CentOS PowerTools repo
+  lineinfile:
+    path: /etc/yum.repos.d/CentOS-Stream-PowerTools.repo
+    create: false
+    regexp: enabled=
+    line: enabled=1
+
+- name: Install openldap server
+  package:
+    name: "{{ openldap_packages }}"
+    state: present
+
+- name: Add to rsyslog.d
+  copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+    group: ldap
+    owner: ldap
+    mode: 0600
+  loop:
+    - content: 
+      dest: /var/log/ldap.log
+    - content: "local4.*                                                /var/log/ldap.log"
+      dest: /etc/rsyslog.d/ldap.conf
+  notify: Restart rsyslog
+

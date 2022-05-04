@@ -1,0 +1,22 @@
+- name: Create dir for root ca
+  file:
+    path: "{{ openssl_remote_ca_cert_dir }}"
+    # path: /etc/ssl/ca-trust/source/anchors
+    state: directory
+
+- name: Push CA
+  copy:
+    src: "{{ openssl_ownca_cert_path }}"
+    dest: "{{ openssl_remote_ca_cert_path }}"
+
+- name: Rehash cert # 通過 hash 以讓應用程式能找到這個 cert
+  command: "openssl rehash {{ openssl_remote_ca_cert_dir }}"
+
+- name: Set ACL for ldap user
+  command: "setfacl -Rm u:ldap:r-x {{ openssl_remote_base_dir }}"
+  ignore_errors: true
+  register: setfacl_ldap_result
+
+- name: Set ACL for sssd user
+  command: "setfacl -Rm u:sssd:r-x {{ openssl_remote_base_dir }}"
+  when: setfacl_ldap_result.rc != 0

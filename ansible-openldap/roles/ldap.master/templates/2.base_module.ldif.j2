@@ -1,0 +1,15 @@
+#
+# Module
+#
+
+dn: cn=module,cn=config
+objectClass: olcModuleList
+cn: module
+olcModulepath: /usr/lib64/openldap
+olcModuleload: accesslog.la
+olcModuleload: auditlog.la
+olcModuleload: dynlist.la
+olcModuleload: back_mdb.la
+olcModuleload: memberof.la
+olcModuleload: refint.la
+olcModuleload: ppolicy.la

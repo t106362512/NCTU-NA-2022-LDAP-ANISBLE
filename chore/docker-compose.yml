@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    ports:
+      - "6443:443"
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "#PYTHON2BASH:[{'localhost': [{'server': [{'tls': True},{'port': 389}]},{'login': [{'bind_id': 'uid=admin,dc=1,dc=nasa}]}]}]"
+      PHPLDAPADMIN_LDAP_CLIENT_TLS_REQCERT: "never"

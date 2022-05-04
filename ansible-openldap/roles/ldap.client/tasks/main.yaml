@@ -1,0 +1,55 @@
+- name: Install ldapclient, sssd
+  package: 
+    name: 
+      - openldap-clients
+      - sssd
+      - sssd-ldap
+      - oddjob-mkhomedir
+    state: present
+
+- name: Enable CentOS PowerTools repo
+  lineinfile:
+    path: /etc/ssh/sshd_config 
+    create: false
+    regexp: "{{ item.raw }}"
+    line: "{{ item.modify }}"
+  notify: Restart sshd
+  loop: 
+    - raw: AuthorizedKeysCommand
+      modify: AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys
+    - raw: AuthorizedKeysCommandUser
+      modify: AuthorizedKeysCommandUser nobody
+
+- name: Set sssd, nsswitch auth config
+  command: authselect select sssd with-mkhomedir --force
+
+- name: Enable feature with-mkhomedir
+  command: "{{ item.cmd }}"
+  loop:
+    - cmd: authselect enable-feature with-mkhomedir
+    - cmd: systemctl enable --now oddjobd.service
+
+- name: Push ldap, sssd conf
+  template: 
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    group: "{{ item.owner }}"
+    owner: "{{ item.owner }}"
+    mode: "{{ item.mode }}"
+  loop: 
+    - src: ldap.conf.j2
+      dest: /etc/openldap/ldap.conf
+      mode: "0644"
+      owner: root
+    - src: sssd.conf.j2
+      dest: /etc/sssd/sssd.conf
+      mode: "0600"
+      owner: root
+
+- name: Apply nsswitch changes
+  lineinfile:
+    path: /etc/nsswitch.conf
+    create: true
+    regexp: "sudoers:"
+    line: "sudoers:    files sss"
+  notify: Restart sssd

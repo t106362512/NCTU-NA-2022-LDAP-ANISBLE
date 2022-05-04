@@ -1,0 +1,7 @@
+---
+- name: Reown slapd.d
+  command: chown -Rf ldap:ldap /etc/openldap/slapd.d
+- name: Restart slapd
+  service:
+    name: slapd
+    state: restarted

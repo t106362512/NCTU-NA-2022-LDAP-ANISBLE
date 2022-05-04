@@ -1,0 +1,45 @@
+#
+# TLS
+#
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCACertificateFile
+olcTLSCACertificateFile: {{ openssl_remote_ca_cert_path }}
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: {{ openssl_remote_private_key_path }}
+-
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: {{ openssl_remote_private_cert_path }}
+-
+replace: olcTLSProtocolMin
+olcTLSProtocolMin: 3.3
+-
+replace: olcTLSCipherSuite
+olcTLSCipherSuite: HIGH
+-
+replace: olcTLSVerifyClient
+olcTLSVerifyClient: never
+-
+replace: olcTLSCRLCheck
+olcTLSCRLCheck: none
+-
+replace: olcLogLevel
+olcLogLevel: 1
+-
+replace: olcSecurity
+olcSecurity: tls=1
+
+
+
+#-
+#replace: olcTLSCRLCheck
+#olcTLSCRLCheck: none
+#-
+#replace: olcTLSVerifyClient
+#olcTLSVerifyClient: never
+
+#-
+#replace: olcSecurity
+#olcSecurity: tls=1

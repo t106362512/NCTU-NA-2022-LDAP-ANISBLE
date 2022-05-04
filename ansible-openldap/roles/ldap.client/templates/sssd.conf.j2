@@ -1,0 +1,48 @@
+# create new
+# replace [ldap_uri], [ldap_search_base] to your own environment value
+
+[domain/default]
+id_provider = ldap
+autofs_provider = ldap
+auth_provider = ldap
+chpass_provider = ldap
+ldap_uri = {{ openldap_client_connect_uri }}
+ldap_search_base = {{ openldap_mdb_suffix }}
+ldap_id_use_start_tls = True
+ldap_tls_cacertdir = {{ openssl_remote_ca_cert_dir }}
+cache_credentials = True
+ldap_tls_reqcert = allow
+
+#ldap_default_bind_dn = {{ ldap_default_bind_dn }}
+#ldap_default_authtok_type = password
+#ldap_default_authtok = {{ ldap_default_authtok }}
+
+# Cache credentials
+cache_credentials = True
+entry_cache_timeout = 3600
+entry_cache_netgroup_timeout = 0
+entry_cache_user_timeout = 600
+entry_cache_group_timeout = 3600
+entry_cache_service_timeout = 28800
+
+# Change autofs schema to RFC2307 extension
+ldap_autofs_map_object_class = automountMap
+ldap_autofs_map_name=ou
+ldap_autofs_entry_object_class = automount
+ldap_autofs_entry_key=cn
+ldap_autofs_entry_value = automountInformation
+
+# Sudo
+sudo_provider = ldap
+ldap_sudo_search_base = ou=Sudoers,{{ openldap_mdb_suffix }}
+ldap_sudo_full_refresh_interval=86400
+ldap_sudo_smart_refresh_interval=3600
+
+[sssd]
+services = nss, pam, autofs, sudo, ssh
+domains = default
+
+[nss]
+homedir_substring = /home
+
+[sudo]

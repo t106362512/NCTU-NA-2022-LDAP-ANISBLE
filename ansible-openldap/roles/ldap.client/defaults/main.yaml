@@ -1,0 +1,5 @@
+openssl_remote_ca_cert_dir: "/etc/openldap"
+openldap_mdb_suffix: "dc=1,dc=nasa"
+openldap_client_connect_uri: "ldap://ldapprovider.1.nasa/"
+ldap_default_bind_dn: "cn=admin,{{ openldap_mdb_suffix }}"
+ldap_default_authtok: MYPASSWD

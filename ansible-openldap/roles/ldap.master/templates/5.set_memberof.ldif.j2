@@ -1,0 +1,64 @@
+#
+# Base OU MemberGroups
+#
+
+dn: ou=MemberGroups,{{ openldap_mdb_suffix }}
+objectClass: top
+objectclass: organizationalUnit
+ou: MemberGroups
+
+
+#
+# Overlay memberOf for nasa lmdb
+#
+
+dn: olcOverlay={0}memberof,olcDatabase={3}mdb,cn=config
+objectClass: olcMemberOf
+objectClass: olcOverlayConfig
+objectClass: olcConfig
+objectClass: top
+olcOverlay: {0}memberof
+olcMemberOfDangling: ignore
+olcMemberOfRefInt: TRUE
+olcMemberOfGroupOC: groupOfUniqueNames
+olcMemberOfMemberAD: uniqueMember
+olcMemberOfMemberOfAD: memberOf
+
+#
+# Overlay refint for nasa lmdb
+#
+
+dn: olcOverlay={1}refint,olcDatabase={3}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcRefintConfig
+objectClass: olcConfig
+objectClass: top
+olcOverlay: {1}refint
+olcRefintAttribute: owner
+olcRefintAttribute: manager
+olcRefintAttribute: uniqueMember
+olcRefintAttribute: member
+olcRefintAttribute: memberOf
+
+
+#
+# MemberGroups
+#
+
+dn: cn=Ta,ou=MemberGroups,{{ openldap_mdb_suffix }}
+cn: Ta
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Ta1,ou=People,{{ openldap_mdb_suffix }}
+uniqueMember: cn=Ta2,ou=People,{{ openldap_mdb_suffix }}
+
+dn: cn=Student,ou=MemberGroups,{{ openldap_mdb_suffix }}
+cn: Student
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Stu1,ou=People,{{ openldap_mdb_suffix }}
+uniqueMember: cn=Stu2,ou=People,{{ openldap_mdb_suffix }}
+
+dn: cn=CS,ou=MemberGroups,{{ openldap_mdb_suffix }}
+cn: CS
+objectClass: groupOfUniqueNames
+uniqueMember: cn=Ta,ou=MemberGroups,{{ openldap_mdb_suffix }}
+uniqueMember: cn=Student,ou=MemberGroups,{{ openldap_mdb_suffix }}

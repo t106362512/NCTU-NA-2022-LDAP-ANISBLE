@@ -1,0 +1,41 @@
+#
+# Base top obj
+#
+
+dn: ou=Sudoers,{{ openldap_mdb_suffix }}
+objectclass: organizationalUnit
+objectclass: top
+ou: Sudoers
+
+#
+# Sudo role
+#
+
+# # 默認全局 sudo 值
+# dn: cn=defaults,ou=Sudoers,{{ openldap_mdb_suffix }}
+# cn: defaults
+# objectclass: sudoRole
+# sudoOption: authenticate
+# sudocommand: ALL
+# sudohost: ALL
+# sudouser: defaults
+
+# # %AdminT1 是一個 posixGroup 群組(只有 posixGroup 可以)
+dn: cn=%Admin,ou=Sudoers,{{ openldap_mdb_suffix }}
+cn: %Admin
+objectclass: sudoRole
+sudoOption: authenticate
+sudocommand: ALL
+sudohost: ALL
+sudouser: %Admin
+sudoOrder: 0
+
+
+dn: cn=%Worker,ou=Sudoers,{{ openldap_mdb_suffix }}
+cn: %Worker
+objectclass: sudoRole
+sudoOption: !authenticate
+sudocommand: /bin/cat
+sudohost: ALL
+sudouser: %Worker
+sudoOrder: 1

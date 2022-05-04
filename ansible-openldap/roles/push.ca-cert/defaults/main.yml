@@ -1,0 +1,10 @@
+---
+openssl_name: 1.nasa
+openssl_ownca_dir: ~/ownca
+openssl_ownca_name: root.1.nasa
+openssl_ownca_cert_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.crt"
+
+openssl_remote_base_dir: /etc/openldap
+
+openssl_remote_ca_cert_dir: "{{ openssl_remote_base_dir }}/certs"
+openssl_remote_ca_cert_path: "{{ openssl_remote_ca_cert_dir }}/root_ca.pem"

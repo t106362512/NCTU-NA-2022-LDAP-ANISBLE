@@ -1,0 +1,36 @@
+---
+openssl_name: ldapserver
+openssl_ownca_dir: ~/ownca
+openssl_ownca_name: root.1.nasa
+openssl_ownca_cert_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.crt"
+openssl_ownca_privatekey_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.key"
+openssl_ownca_privatekey_phrase: ownca
+
+openssl_remote_base_dir: /etc/openldap
+openssl_remote_private_dir: "{{ openssl_remote_base_dir }}/private"
+openssl_remote_private_key_path: "{{ openssl_remote_private_dir }}/{{ openssl_name }}_key.pem"
+openssl_remote_private_cert_path: "{{ openssl_remote_private_dir }}/{{ openssl_name }}.crt"
+openssl_remote_for_ca_csr_path: "{{ openssl_remote_private_dir }}/{{ openssl_name }}.csr"
+openssl_download_for_sign_csr_path: "{{ openssl_ownca_dir }}/{{ openssl_name }}.csr"
+openssl_signed_csr_crt_path: "{{ openssl_ownca_dir }}/{{ openssl_name }}_crt.pem"
+
+openssl_remote_ca_cert_dir: "{{ openssl_remote_base_dir }}/certs"
+openssl_remote_ca_cert_path: "{{ openssl_remote_ca_cert_dir }}/ca.pem"
+
+
+openldap_config_password: MYPASSWD
+openldap_admin_password: MYPASSWD
+openldap_mdb_suffix: "dc=1,dc=nasa"
+openldap_packages:
+  - openldap
+  - openldap-*
+  - nscd
+  - nss-*
+  - pcre
+  - pcre-*
+  - perl
+  # - compat-openldap
+
+openldap_client_connect_uri: "ldap://ldapprovider.1.nasa/"
+ldap_default_bind_dn: "cn=admin,{{ openldap_mdb_suffix }}"
+ldap_default_authtok: MYPASSWD

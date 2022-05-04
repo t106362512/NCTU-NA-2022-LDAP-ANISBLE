@@ -1,0 +1,107 @@
+# - name: Reinstall sudo to get schema.OpenLDAP
+#   command: dnf reinstall -y sudo
+
+# - name: Install openssh-ldap
+#   package: 
+#     name: 
+#       - openssh-ldap
+#       - git
+#     state: present
+
+# - name: Get openldap from gitlab
+#   git:
+#     repo: https://git.openldap.org/openldap/openldap.git
+#     dest: "~/openldap"
+
+# - name: Copy schema
+#   command: cp ~/openldap/servers/slapd/schema/*.ldif /etc/openldap/schema/
+
+# - name: Copy schema
+#   copy:
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
+#     group: ldap
+#     owner: ldap
+#     mode: 0644
+#     remote_src: true
+#   loop: 
+#     - src: /usr/share/doc/sudo/schema.OpenLDAP
+#       dest: /etc/openldap/schema/sudo.schema
+#     - src: /usr/share/doc/openssh-ldap/openssh-lpk-openldap.schema
+#       dest: /etc/openldap/schema/openssh-lpk-openldap.schema
+
+- name: Create slappasswd - cn=config
+  command: slappasswd -h {SSHA} -s "{{ openldap_config_password }}"
+  register: openldap_config_sha
+
+- name: Create slappasswd - cn=admin,dc=1,dc=nasa
+  command: slappasswd -h {SSHA} -s "{{ openldap_admin_password }}"
+  register: openldap_admin_sha
+
+- name: Push schema ldif
+  copy: 
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    group: ldap
+    owner: ldap
+    mode: 0644
+  loop: 
+    - src: schema_openssh-lpk-openldap.ldif
+      dest: /etc/openldap/schema/openssh-lpk-openldap.ldif
+    - src: schema_sudo.ldif
+      dest: /etc/openldap/schema/sudo.ldif
+
+- name: Push ldif and conf from template
+  template: 
+    src: "{{ item.src }}"
+    dest: "/etc/openldap/{{ item.path | regex_replace('\\.j2$', '') }}"
+  with_filetree: "{{ role_path }}/templates"
+  when: item.state == 'file'
+
+# - name: Convert schema to ldif
+#   command: slaptest -f /etc/openldap/0.schema_convert.conf -F /tmp
+
+# - name: Move ldif to schema
+#   command: "mv {{ item.src }} {{ item.dest }} "
+#   loop: 
+#     - src: /tmp/cn=config/cn=schema/cn={0}sudo.ldif
+#       dest: /etc/openldap/schema/sudo.ldif
+#     - src: /tmp/cn=config/cn=schema/cn={1}openssh-lpk-openldap.ldif
+#       dest: /etc/openldap/schema/openssh-lpk-openldap.ldif
+
+- name: Reown slapd.d
+  command: chown -Rf ldap:ldap /etc/openldap/slapd.d
+
+- name: Enable service slapd, and start it
+  service:
+    name: slapd
+    state: started
+    enabled: true
+  
+- name: Change default LDAP config passwd - modify
+  become: true
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/0.set_config_password.ldif
+
+- name: Add base module, db
+  command: "ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/{{ item.base_ldif }}"
+  ignore_errors: true
+  loop: 
+    - base_ldif: 1.include_schema.ldif
+    - base_ldif: 2.base_module.ldif
+    - base_ldif: 3.base_mdb.ldif
+    - base_ldif: 4.base_tree.ldif
+    - base_ldif: 5.set_memberof.ldif
+    - base_ldif: 6.set_sudoers.ldif
+    - base_ldif: 7.set_ppolicy.ldif
+
+- name: Set ACL for ldap user
+  command: "setfacl -Rm u:ldap:r-x /etc/openldap/"
+
+- name: Config TLS
+  command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/99.config_tls.ldif
+  # ldapmodify -xw "{{ openldap_config_password }}" -D "cn=config" -H ldap:/// -f /etc/openldap/99.config_tls.ldif
+  # ldapmodify -ZZxw "{{ openldap_config_password }}" -D "cn=config" -H ldap:/// -f /etc/openldap/99.config_tls.ldif
+  notify: Restart slapd
+  ignore_errors: true
+
+
