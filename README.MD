@@ -34,3 +34,5 @@
     ```sh
     ansible-playbook ldap-playbook.yml
     ```
+
+7. 倘若不想自己寫 `ldif` 或 cli 操作, 可使用 `chore/docker-compose.yml` 來快速部一個 phpldapadmin 來編輯與瀏覽
