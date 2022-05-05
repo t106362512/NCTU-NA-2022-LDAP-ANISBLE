@@ -7,7 +7,7 @@
       - oddjob-mkhomedir
     state: present
 
-- name: Enable CentOS PowerTools repo
+- name: Change AuthorizedKeysCommand
   lineinfile:
     path: /etc/ssh/sshd_config 
     create: false
