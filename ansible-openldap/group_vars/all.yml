@@ -31,7 +31,7 @@ openldap_packages:
   - perl
   # - compat-openldap
 
-openldap_client_connect_uri: "ldap://ldapprovider.1.nasa/"
+openldap_client_connect_uri: "ldap://ldap.1.nasa/"
 ldap_default_bind_dn: "cn=admin,{{ openldap_mdb_suffix }}"
 ldap_default_authtok: MYPASSWD
 
