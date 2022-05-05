@@ -2,7 +2,6 @@
   package:
     name: 
       - python3-cryptography
-      # - security/py-cryptography
 
 - name: Create dir for private key
   file:
@@ -21,9 +20,7 @@
     state_or_province_name: Taiwan
     organization_name: nasa
     organizational_unit_name: "1"
-    common_name: "{{ ansible_facts['fqdn'] }}"
-    subject_alt_name: "DNS:{{ ansible_fqdn }}"
-    email_address: "cwang.cs10@nycu.edu.tw"
+    common_name: "{{ ansible_fqdn }}"
 
 - name: Pull CSR
   fetch:
@@ -47,20 +44,3 @@
   copy:
     src: "{{ openssl_signed_csr_crt_path }}"
     dest: "{{ openssl_remote_private_cert_path }}"
-
-# - name: Create dir for root ca
-#   file:
-#     path: "{{ openssl_remote_ca_cert_dir }}"
-#     # path: /etc/ssl/ca-trust/source/anchors
-#     state: directory
-
-# - name: Push CA
-#   copy:
-#     src: "{{ openssl_ownca_cert_path }}"
-#     dest: "{{ openssl_remote_ca_cert_path }}"
-
-# - name: Rehash cert # 通過 hash 以讓應用程式能找到這個 cert
-#   command: "openssl rehash {{ openssl_remote_ca_cert_dir }}"
-
-# - name: Set ACL for LDAP user
-#   command: "setfacl -Rm 'u:ldap:r-x' {{ openssl_remote_base_dir }}"
