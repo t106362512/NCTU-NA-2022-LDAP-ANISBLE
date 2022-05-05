@@ -1,6 +1,3 @@
-# create new
-# replace [ldap_uri], [ldap_search_base] to your own environment value
-
 [domain/default]
 id_provider = ldap
 autofs_provider = ldap
@@ -33,6 +30,9 @@ sudo_provider = ldap
 ldap_sudo_search_base = ou=Sudoers,{{ openldap_mdb_suffix }}
 ldap_sudo_full_refresh_interval=86400
 ldap_sudo_smart_refresh_interval=3600
+
+# Filter login
+ldap_access_filter = (|(memberof=cn=Ta,ou=MemberGroup,{{ openldap_mdb_suffix }})(memberof=cn=Student,ou=MemberGroup,{{ openldap_mdb_suffix }}))
 
 [sssd]
 services = nss, pam, autofs, sudo, ssh
