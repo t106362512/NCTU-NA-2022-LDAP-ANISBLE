@@ -1,35 +1,3 @@
-# - name: Reinstall sudo to get schema.OpenLDAP
-#   command: dnf reinstall -y sudo
-
-# - name: Install openssh-ldap
-#   package: 
-#     name: 
-#       - openssh-ldap
-#       - git
-#     state: present
-
-# - name: Get openldap from gitlab
-#   git:
-#     repo: https://git.openldap.org/openldap/openldap.git
-#     dest: "~/openldap"
-
-# - name: Copy schema
-#   command: cp ~/openldap/servers/slapd/schema/*.ldif /etc/openldap/schema/
-
-# - name: Copy schema
-#   copy:
-#     src: "{{ item.src }}"
-#     dest: "{{ item.dest }}"
-#     group: ldap
-#     owner: ldap
-#     mode: 0644
-#     remote_src: true
-#   loop: 
-#     - src: /usr/share/doc/sudo/schema.OpenLDAP
-#       dest: /etc/openldap/schema/sudo.schema
-#     - src: /usr/share/doc/openssh-ldap/openssh-lpk-openldap.schema
-#       dest: /etc/openldap/schema/openssh-lpk-openldap.schema
-
 - name: Create slappasswd - cn=config
   command: slappasswd -h {SSHA} -s "{{ openldap_config_password }}"
   register: openldap_config_sha
@@ -57,17 +25,6 @@
     dest: "/etc/openldap/{{ item.path | regex_replace('\\.j2$', '') }}"
   with_filetree: "{{ role_path }}/templates"
   when: item.state == 'file'
-
-# - name: Convert schema to ldif
-#   command: slaptest -f /etc/openldap/0.schema_convert.conf -F /tmp
-
-# - name: Move ldif to schema
-#   command: "mv {{ item.src }} {{ item.dest }} "
-#   loop: 
-#     - src: /tmp/cn=config/cn=schema/cn={0}sudo.ldif
-#       dest: /etc/openldap/schema/sudo.ldif
-#     - src: /tmp/cn=config/cn=schema/cn={1}openssh-lpk-openldap.ldif
-#       dest: /etc/openldap/schema/openssh-lpk-openldap.ldif
 
 - name: Reown slapd.d
   command: chown -Rf ldap:ldap /etc/openldap/slapd.d
@@ -99,8 +56,6 @@
 
 - name: Config TLS
   command: ldapmodify -Y EXTERNAL -H ldapi:/// -f /etc/openldap/99.config_tls.ldif
-  # ldapmodify -xw "{{ openldap_config_password }}" -D "cn=config" -H ldap:/// -f /etc/openldap/99.config_tls.ldif
-  # ldapmodify -ZZxw "{{ openldap_config_password }}" -D "cn=config" -H ldap:/// -f /etc/openldap/99.config_tls.ldif
   notify: Restart slapd
   ignore_errors: true
 
