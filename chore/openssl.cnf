@@ -66,8 +66,10 @@ countryName_default             = US
 basicConstraints                = critical,CA:TRUE
 subjectKeyIdentifier            = hash
 authorityKeyIdentifier          = keyid:always,issuer:always
-subjectAltName                  = @alt_names
+# subjectAltName                  = @alt_names
 
 [ v3_req ]
 basicConstraints                = CA:FALSE
 subjectKeyIdentifier            = hash
+
+[alt_names]
