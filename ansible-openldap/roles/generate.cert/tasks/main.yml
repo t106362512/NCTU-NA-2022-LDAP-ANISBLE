@@ -19,7 +19,7 @@
     country_name: TW
     state_or_province_name: Taiwan
     organization_name: nasa
-    organizational_unit_name: "1"
+    organizational_unit_name: "{{ organizational_unit_name }}"
     common_name: "{{ ansible_fqdn }}"
 
 - name: Pull CSR

@@ -5,6 +5,7 @@ openssl_ownca_name: root.1.nasa
 openssl_ownca_cert_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.crt"
 openssl_ownca_privatekey_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.key"
 openssl_ownca_privatekey_phrase: ownca
+organizational_unit_name: "4"
 
 openssl_remote_base_dir: /etc/openldap
 openssl_remote_private_dir: "{{ openssl_remote_base_dir }}/private"
