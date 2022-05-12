@@ -22,7 +22,7 @@ ou: OSGroups
 # User
 #
 
-dn: cn=ta1,ou=People,{{ openldap_mdb_suffix }}
+dn: uid=ta1,ou=People,{{ openldap_mdb_suffix }}
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -30,6 +30,7 @@ objectClass: posixAccount
 objectClass: shadowAccount
 objectClass: ldapPublicKey
 sn: ta1
+cn:ta1
 uid: ta1
 uidNumber: 10001
 gidNumber: 10000
@@ -38,7 +39,7 @@ sshPublicKey: {{ ldap_default_sshPublicKey }}
 userPassword: {{ openldap_admin_sha.stdout }}
 loginShell: /bin/bash
 
-dn: cn=ta2,ou=People,{{ openldap_mdb_suffix }}
+dn: uid=ta2,ou=People,{{ openldap_mdb_suffix }}
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -46,6 +47,7 @@ objectClass: posixAccount
 objectClass: shadowAccount
 objectClass: ldapPublicKey
 sn: ta2
+cn: ta2
 uid: ta2
 uidNumber: 10002
 gidNumber: 10000
@@ -55,7 +57,7 @@ userPassword: {{ openldap_admin_sha.stdout }}
 loginShell: /bin/bash
 
 
-dn: cn=stu1,ou=People,{{ openldap_mdb_suffix }}
+dn: uid=stu1,ou=People,{{ openldap_mdb_suffix }}
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -63,6 +65,7 @@ objectClass: posixAccount
 objectClass: shadowAccount
 objectClass: ldapPublicKey
 sn: stu1
+cn: stu1
 uid: stu1
 uidNumber: 20001
 gidNumber: 20000
@@ -71,7 +74,7 @@ sshPublicKey: {{ ldap_default_sshPublicKey }}
 userPassword: {{ openldap_admin_sha.stdout }}
 loginShell: /bin/bash
 
-dn: cn=stu2,ou=People,{{ openldap_mdb_suffix }}
+dn: uid=stu2,ou=People,{{ openldap_mdb_suffix }}
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
@@ -79,6 +82,7 @@ objectClass: posixAccount
 objectClass: shadowAccount
 objectClass: ldapPublicKey
 sn: stu2
+cn: stu2
 uid: stu2
 uidNumber: 20002
 gidNumber: 20000
