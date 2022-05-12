@@ -1,7 +1,7 @@
 ---
 openssl_name: ldapserver
 openssl_ownca_dir: ~/ownca
-openssl_ownca_name: root.1.nasa
+openssl_ownca_name: 4.nasa
 openssl_ownca_cert_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.crt"
 openssl_ownca_privatekey_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.key"
 openssl_ownca_privatekey_phrase: ownca
@@ -21,7 +21,7 @@ openssl_remote_ca_cert_path: "{{ openssl_remote_ca_cert_dir }}/ca.pem"
 
 openldap_config_password: MYPASSWD
 openldap_admin_password: MYPASSWD
-openldap_mdb_suffix: "dc=1,dc=nasa"
+openldap_mdb_suffix: "dc=4,dc=nasa"
 openldap_packages:
   - openldap
   - openldap-*
@@ -32,8 +32,9 @@ openldap_packages:
   - perl
   # - compat-openldap
 
-openldap_client_connect_uri: "ldap://ldap.1.nasa/"
+openldap_client_connect_uri: "ldap://ldap.4.nasa/"
 ldap_default_bind_dn: "cn=admin,{{ openldap_mdb_suffix }}"
 ldap_default_authtok: MYPASSWD
 
-ldap_default_sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCS2CaGnAt5/3Ah413rWU3ZszkWKzYJNdIT/qhcxpM5bDMDZKUrQWZBoZqWpF/aYB0oEU6yhSHy1ZXPAfQU5hllKQJwnGjjX6g/GKWkK9vHabm9g8lHTNE4b+DVvv2ENqh0jM9B8dAqQWXab1Vs59/Fz4INEmOLr+LbppK18yziYBs508dN2TjaY4D8htLm7eV872NLwFZ7jg8NxldFsbBbAq+uEvfh9AxeYQvPQTCu7c1wymLxK7h8VcVfOtggaJXiQG3Kc86jZKicng/EAZmS/DfR/EgGBesB2VCwtBg1OaqBcPgM01ZiV9kwEhITwugihY2A6FiE8EAQMVVKCGDJwhdZzZ/rofy3GLFwvHrOu0zZuhSq1nabnntHQWiWGSXtJBd9dK3sFfcm0OZOYrvlPTdHcIzNBgdMyRbt/Qt/DrKdGapDrv1yw8JMcM8TbzNo18SKVsvfKUd9fvPj2yaP6JRa7CTYv8vth1jpzL43lJJPKkF+g3OpX142SG1uTtM= ta"
+# ldap_default_sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCS2CaGnAt5/3Ah413rWU3ZszkWKzYJNdIT/qhcxpM5bDMDZKUrQWZBoZqWpF/aYB0oEU6yhSHy1ZXPAfQU5hllKQJwnGjjX6g/GKWkK9vHabm9g8lHTNE4b+DVvv2ENqh0jM9B8dAqQWXab1Vs59/Fz4INEmOLr+LbppK18yziYBs508dN2TjaY4D8htLm7eV872NLwFZ7jg8NxldFsbBbAq+uEvfh9AxeYQvPQTCu7c1wymLxK7h8VcVfOtggaJXiQG3Kc86jZKicng/EAZmS/DfR/EgGBesB2VCwtBg1OaqBcPgM01ZiV9kwEhITwugihY2A6FiE8EAQMVVKCGDJwhdZzZ/rofy3GLFwvHrOu0zZuhSq1nabnntHQWiWGSXtJBd9dK3sFfcm0OZOYrvlPTdHcIzNBgdMyRbt/Qt/DrKdGapDrv1yw8JMcM8TbzNo18SKVsvfKUd9fvPj2yaP6JRa7CTYv8vth1jpzL43lJJPKkF+g3OpX142SG1uTtM= ta"
+ldap_default_sshPublicKey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDhhgWcdaP64XsL2R3cyTnE+UCnuggvTjKddZWjKLs06Y5f+HovlD4enCnEdomQMix9K4gJ8AWm10ukBFCdAhGuhGQcsiTb/SHzuOHwZ93QLZ1bnTMT7NcN3+BaY9LKr11SLXT+fJ99UO+4DssNtdaM1qkrSanJ9sMVy9TDUXj6DLc5yw9KYOQ68seG80DTXbwNnEfctYlhbFGep48q7CZgGq6EfPPtuoz0bA5OrunndaFf7krZUiqeOP35rZAdjdugXUdQhkasfLe8LaXm2KOsB863cWbflQ9WmidkEV9z8bYMaHNXLLMhByBhyea+gpsbhlTXPrRWTTOhQHp+uih8WI1cgoRp/TO8K/W/4YfxAkSZdzLTZeZZhDhyJhvQKbp35Rw33/wSVyDgrqcILse+M++XGES7sB+gi6oZWKugq7Sx+d6hwBmxdSyi5FABo5dguvjtIxQz5tYEDol7vVmLplNOvrtMDUgmtE5q8BCsTFmMUMFzztZJEanAhOrMSNc= 2022-na-hw4"
