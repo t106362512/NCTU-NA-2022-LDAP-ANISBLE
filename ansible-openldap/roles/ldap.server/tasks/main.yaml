@@ -3,7 +3,15 @@
   package:
     name:
       - epel-release
+      - epel-next-release
     state: present
+
+- name: Enable CentOS PowerTools repo
+  lineinfile:
+    path: /etc/yum.repos.d/CentOS-Stream-PowerTools.repo
+    create: false
+    regexp: enabled=
+    line: enabled=1
 
 - name: Install openldap server
   package:
