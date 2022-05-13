@@ -24,11 +24,12 @@ ou: Sudoers
 dn: cn=%Admin,ou=Sudoers,{{ openldap_mdb_suffix }}
 cn: %Admin
 objectclass: sudoRole
-sudoOption: authenticate
+sudoOption: !authenticate
 sudocommand: ALL
 sudohost: ALL
 sudouser: %Admin
 sudoOrder: 0
+#sudoOption: authenticate
 
 
 dn: cn=%Worker,ou=Sudoers,{{ openldap_mdb_suffix }}
