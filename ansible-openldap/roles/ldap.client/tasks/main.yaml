@@ -18,7 +18,7 @@
     - raw: AuthorizedKeysCommand
       modify: AuthorizedKeysCommand /usr/bin/sss_ssh_authorizedkeys
     - raw: AuthorizedKeysCommandUser
-      modify: AuthorizedKeysCommandUser nobody
+      modify: AuthorizedKeysCommandUser %u
 
 - name: Set sssd, nsswitch auth config
   command: authselect select sssd with-mkhomedir --force
