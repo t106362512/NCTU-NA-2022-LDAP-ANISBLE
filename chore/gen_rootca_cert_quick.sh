@@ -1,8 +1,8 @@
 #!/bin/bash
-ROOTCA_NAME=root.1.nasa
+ROOTCA_NAME=4.nasa
 OPENSSL_CNF=openssl.cnf
 PASSWORD="ownca"
-ROOTCA_SUBJ="/C=TW/ST=Taiwan/O=nasa/OU=1/CN=root.1.nasa/emailAddress=cwang.cs10@nycu.edu.tw"
+ROOTCA_SUBJ="/C=TW/ST=Taiwan/O=nasa/OU=4/CN=4.nasa/emailAddress=cwang.cs10@nycu.edu.tw"
 ROOTCA_QUICK_DIR=${HOME}/ownca
 ROOTCA_QUICK_KEY=${ROOTCA_QUICK_DIR}/${ROOTCA_NAME}.key
 ROOTCA_QUICK_REQ=${ROOTCA_QUICK_DIR}/${ROOTCA_NAME}.req
