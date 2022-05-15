@@ -35,7 +35,11 @@ ldap_sudo_smart_refresh_interval=3600
 access_provider = ldap
 ldap_access_order = filter
 ldap_group_member = member
+{% if 'ldap.' + stu_id + '.nasa' == ansible_fqdn %}
+ldap_access_filter = (memberof=cn=Ta,ou=MemberGroups,{{ openldap_mdb_suffix }})
+{% else %}
 ldap_access_filter = (|(memberof=cn=Ta,ou=MemberGroups,{{ openldap_mdb_suffix }})(memberof=cn=Student,ou=MemberGroups,{{ openldap_mdb_suffix }}))
+{% endif %}
 
 [sssd]
 services = nss, pam, autofs, sudo, ssh

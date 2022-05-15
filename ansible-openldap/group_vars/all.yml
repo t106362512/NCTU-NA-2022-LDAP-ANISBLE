@@ -1,11 +1,13 @@
 ---
+stu_id: "4"
+
 openssl_name: ldapserver
 openssl_ownca_dir: ~/ownca
-openssl_ownca_name: 4.nasa
+openssl_ownca_name: "{{ stu_id }}.nasa"
 openssl_ownca_cert_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.crt"
 openssl_ownca_privatekey_path: "{{ openssl_ownca_dir }}/{{ openssl_ownca_name }}.key"
 openssl_ownca_privatekey_phrase: ownca
-organizational_unit_name: "4"
+organizational_unit_name: "{{ stu_id }}"
 
 openssl_remote_base_dir: /etc/openldap
 openssl_remote_private_dir: "{{ openssl_remote_base_dir }}/private"
@@ -21,7 +23,7 @@ openssl_remote_ca_cert_path: "{{ openssl_remote_ca_cert_dir }}/ca.pem"
 
 openldap_config_password: MYPASSWD
 openldap_admin_password: MYPASSWD
-openldap_mdb_suffix: "dc=4,dc=nasa"
+openldap_mdb_suffix: "dc={{ stu_id }},dc=nasa"
 openldap_packages:
   - openldap
   - openldap-*
@@ -32,7 +34,7 @@ openldap_packages:
   - perl
   # - compat-openldap
 
-openldap_client_connect_uri: "ldap://ldap.4.nasa/"
+openldap_client_connect_uri: "ldap://ldap.{{ stu_id }}.nasa/"
 ldap_default_bind_dn: "cn=admin,{{ openldap_mdb_suffix }}"
 ldap_default_authtok: MYPASSWD
 

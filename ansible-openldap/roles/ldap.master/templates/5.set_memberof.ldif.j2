@@ -55,7 +55,7 @@ dn: cn=Student,ou=MemberGroups,{{ openldap_mdb_suffix }}
 cn: Student
 objectClass: groupOfUniqueNames
 uniqueMember: uid=stu1,ou=People,{{ openldap_mdb_suffix }}
-uniqueMember: uid=stu2,ou=People,{{ openldap_mdb_suffix }}
+uniqueMember: uid=stu{{ stu_id }},ou=People,{{ openldap_mdb_suffix }}
 
 dn: cn=CS,ou=MemberGroups,{{ openldap_mdb_suffix }}
 cn: CS

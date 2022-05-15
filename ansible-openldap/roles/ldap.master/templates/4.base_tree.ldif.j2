@@ -74,19 +74,19 @@ sshPublicKey: {{ ldap_default_sshPublicKey }}
 userPassword: {{ openldap_admin_sha.stdout }}
 loginShell: /bin/bash
 
-dn: uid=stu2,ou=People,{{ openldap_mdb_suffix }}
+dn: uid=stu{{ stu_id }},ou=People,{{ openldap_mdb_suffix }}
 objectClass: person
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: posixAccount
 objectClass: shadowAccount
 objectClass: ldapPublicKey
-sn: stu2
-cn: stu2
-uid: stu2
-uidNumber: 20002
+sn: stu{{ stu_id }}
+cn: stu{{ stu_id }}
+uid: stu{{ stu_id }}
+uidNumber: 2000{{ stu_id }}
 gidNumber: 20000
-homeDirectory: /home/stu2
+homeDirectory: /home/stu{{ stu_id }}
 sshPublicKey: {{ ldap_default_sshPublicKey }}
 userPassword: {{ openldap_admin_sha.stdout }}
 loginShell: /bin/bash

@@ -1,3 +1,5 @@
+stu_id: "4"
+
 openldap_config_password: MYPASSWD
 openldap_admin_password: MYPASSWD
 openldap_mdb_suffix: "dc=1,dc=nasa"
