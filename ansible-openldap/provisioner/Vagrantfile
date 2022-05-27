@@ -4,68 +4,166 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/centos-stream-8"
 
-  config.vm.provision :hosts do |provisioner|
-		provisioner.autoconfigure = true
-		provisioner.sync_hosts = true
-	end
+#   config.vm.provision :hosts do |provisioner|
+# 		provisioner.autoconfigure = true
+# 		provisioner.sync_hosts = true
+# 	end
 
-  config.vm.provider "virtualbox" do |v|
-    v.gui = false
-    v.memory = "1024"
-    v.cpus   = "2"
-    v.customize ['modifyvm', :id, '--nicpromisc1', 'allow-all']
-  end
-  
 #   config.vm.provision "ansible" do |ansible|
 #     ansible.playbook       = "../ldap-playbook.yml"
 #     ansible.verbose        = false
 #   end
 
-#   config.vm.define "router" do |router|
-# 	router.vm.hostname = "router.nctu.cs"
-# 	router.vm.box = "vyos/current"
-# 	router.vm.network :private_network, ip: "10.113.0.1"
-# 	router.vm.network :forwarded_port, guest: 22, host: 2221, id: "ssh"
-# end
+  config.vm.provider "virtualbox" do |v|
+    v.gui = false
+    v.memory = "1024"
+    v.cpus   = "2"
+  end
+
+  # vagrant plugin install vagrant-vyos
+  config.vm.define "router" do |router|
+	router.vm.hostname = "router.4.nasa"
+	router.vm.box = "vyos/current"
+	# router.vm.network :private_network, ip: "10.113.0.1", mac: "000000000001", virtualbox__intnet: "intnet1"
+	router.vm.network :private_network, auto_config: false, mac: "000000000001", virtualbox__intnet: "intnet1"
+	router.vm.network :forwarded_port, guest: 22, host: 2221, id: "ssh"
+	router.vm.provision "shell", privileged: true, inline: <<-SHELL
+		source /opt/vyatta/etc/functions/script-template 
+
+		add container image docker.io/coredns/coredns:1.9.2
+
+		configure terminal
+
+		set interfaces ethernet eth1 address 172.16.4.254/24
+		set interfaces ethernet eth1 address 172.16.4.1/24
+		set interfaces ethernet eth1 address 172.16.4.2/24
+
+		set service dhcp-server shared-network-name nadhcp authoritative
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 default-router 172.16.4.254
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 range nadhcpsnr start 172.16.4.3
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 range nadhcpsnr stop 172.16.4.250
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 static-mapping naagent mac-address 00:00:00:00:00:10
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 static-mapping naagent ip-address 172.16.4.123
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 static-mapping ldapmaster mac-address 00:00:00:00:00:02
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 static-mapping ldapmaster ip-address 172.16.4.3
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 static-mapping ldapclient mac-address 00:00:00:00:00:06
+		set service dhcp-server shared-network-name nadhcp subnet 172.16.4.0/24 static-mapping ldapclient ip-address 172.16.4.4
+		# set service dhcp-server shared-network-name nadhcp name-server 172.16.4.1
+		# set service dhcp-server shared-network-name nadhcp name-server 172.16.4.2
+		set service dhcp-server shared-network-name nadhcp name-server 8.8.8.8
+
+		set nat source rule 10 outbound-interface eth0
+		set nat source rule 10 source address 172.16.4.0/24
+		set nat source rule 10 translation address masquerade
+
+		set interfaces wireguard wg0 address '10.113.4.1/32'
+		set interfaces wireguard wg0 private-key '8Bw1EjfqHkdp8Q0tSELoMUv0hgMm/V4bPMJC0BGufnM='
+		set interfaces wireguard wg0 peer to-oj allowed-ips '10.113.0.0/16'
+		set interfaces wireguard wg0 peer to-oj allowed-ips '172.16.0.0/16'
+		set interfaces wireguard wg0 peer to-oj address '140.113.168.131'
+		set interfaces wireguard wg0 peer to-oj port '51004'
+		set interfaces wireguard wg0 peer to-oj persistent-keepalive '15'
+		set interfaces wireguard wg0 peer to-oj public-key 'og9d6Kk7uBbi97NsBEceZz3EeBWGTOGck+ff49Y9hSg='
+		set protocols static route 10.113.0.0/16 interface wg0
+		set protocols static route 172.16.0.0/16 interface wg0
+
+
+		# set container name coredns image docker.io/coredns/coredns:1.9.2
+		# set container name coredns allow-host-networks
+
+		# set container name coredns volume 'corefile' source /config/coredns/Corefile
+		# set container name coredns volume 'corefile' destination /Corefile
+		## ===== CoreDNS ===== write to `/config/coredns/Corefile`
+		# . {
+		#   bind 172.16.4.2
+		#   file 4.nasa 4.nasa
+		#   #transfer 4.nasa {
+		#   #  to * 172.16.4.2
+		#   #}
+		#   #hosts {
+		#   #  172.16.4.3 ldap.4.nasa
+		#   #  172.16.4.4 workstation.4.nasa
+		#   #  fallthrough
+		#   #}
+		#   forward . 1.1.1.1 8.8.8.8
+		#   log
+		#   loop
+		#   reload
+		# }
+
+
+		# set container name coredns volume 'nasadb' source /config/coredns/4.nasa
+		# set container name coredns volume 'nasadb' destination /4.nasa
+		## ===== 4.nasa db ===== write to `/config/coredns/4.nasa`
+		# @               IN      SOA     ns1.4.nasa. root.4.nasa. 2022051001 7200 3600 1209600 3600
+		#                 IN      NS      ns1.4.nasa.
+		#
+		# localhost       IN      A       127.0.0.1
+		#
+		# 4.nasa.         IN      A       172.16.4.1
+		#
+		# ns1             IN      A       172.16.4.1
+		#
+		# ns2             IN      A       172.16.4.2
+		#
+		# ldap            IN      A       172.16.4.3
+		#
+		# workstation     IN      A       172.16.4.4
+		#
+		## ===== 這個內容來源是 `cat ldapserver_crt.pem | base64 | sed -n 's/\(.*\)/"\1"/p'` =====
+		# cert            IN      TXT     ( "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVUakNDQXphZ0F3SUJBZ0lKQUsySC8vMHY0"
+		#                 "c2N0TUEwR0NTcUdTSWIzRFFFQkJRVUFNSFl4Q3pBSkJnTlYKQkFZVEFsUlhNUTh3RFFZRFZRUUlE"
+		#                 "QVpVWVdsM1lXNHhEVEFMQmdOVkJBb01CRzVoYzJFeENqQUlCZ05WQkFzTQpBVEV4RkRBU0JnTlZC"
+		#                 "QU1NQzNKdmIzUXVNUzV1WVhOaE1TVXdJd1lKS29aSWh2Y05BUWtCRmhaamQyRnVaeTVqCmN6RXdR"
+		#                 "RzU1WTNVdVpXUjFMblIzTUI0WERUSXlNRFV4TVRBMk1UZ3hObG9YRFRReU1EVXhNVEEyTVRneE5s"
+		#                 "b3cKZGpFTE1Ba0dBMVVFQmhNQ1ZGY3hEekFOQmdOVkJBZ01CbFJoYVhkaGJqRU5NQXNHQTFVRUNn"
+		#                 "d0VibUZ6WVRFSwpNQWdHQTFVRUN3d0JNVEVVTUJJR0ExVUVBd3dMY205dmRDNHhMbTVoYzJFeEpU"
+		#                 "QWpCZ2txaGtpRzl3MEJDUUVXCkZtTjNZVzVuTG1Oek1UQkFibmxqZFM1bFpIVXVkSGN3Z2dFaU1B"
+		#                 "MEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXcKZ2dFS0FvSUJBUUN5c1ZCZ2FSRnBmOTBoSUlqR3RP"
+		#                 "L0NUem9WTTk0c1RwcVNINURDMFQzMGFQLzhGcTZrSTZBUQpJS0JBTzEzRVBkZ1NnSlBiMk1lMWtJ"
+		#                 "N2p5bHFXTGhUZWFGdHVhckt6UkQraEVVQ0hrYlY2UzZQeHNwZGJ3L0krClZ5SG9kTUNBME1rTGVi"
+		#                 "dVhnVnJjOE01WnhMc3pjRHVzRnN4L0d6MXRZNmI3dzEwM3hhSUdyaDVWQjAwM3pMdlAKbHBvakJK"
+		#                 "SWxFYzFsNjVjaWhId3lyMk80MWNyZUFUYzdXQXljS1JQOFlWWk1seVF3dE5laDhIaFhhckh5azlo"
+		#                 "NwpRWEZSL014bjc2Wllyd3hsRGJWQVRrOFpoeDRsVzluYU5CdzJMY0pFQWRmeHI3MjMxOUtmMVpR"
+		#                 "VHBNbTBBZUpaCjlEY0NNWlZoYlRoSEorNmpRa1oybVkwWUw5U3JrZWlMQWdNQkFBR2pnZDR3Z2Rz"
+		#                 "d0R3WURWUjBUQVFIL0JBVXcKQXdFQi96QWRCZ05WSFE0RUZnUVVTbmNkUjVTTUlqZUhIZmJBRVBR"
+		#                 "ZGFPNmpTdjh3Z2FnR0ExVWRJd1NCb0RDQgpuWUFVU25jZFI1U01JamVISGZiQUVQUWRhTzZqU3Yr"
+		#                 "aGVxUjRNSFl4Q3pBSkJnTlZCQVlUQWxSWE1ROHdEUVlEClZRUUlEQVpVWVdsM1lXNHhEVEFMQmdO"
+		#                 "VkJBb01CRzVoYzJFeENqQUlCZ05WQkFzTUFURXhGREFTQmdOVkJBTU0KQzNKdmIzUXVNUzV1WVhO"
+		#                 "aE1TVXdJd1lKS29aSWh2Y05BUWtCRmhaamQyRnVaeTVqY3pFd1FHNTVZM1V1WldSMQpMblIzZ2dr"
+		#                 "QXJZZi8vUy9peHkwd0RRWUpLb1pJaHZjTkFRRUZCUUFEZ2dFQkFEeFlQMm9UNUdBQy9VWmF6ek1B"
+		#                 "CldJOWZBUUVLWGx2bnNrS0dZWGJWQnBqdUNOSC9TRi9ndHBwNWpRaGhzVS82RjJ3dTNPUDNReHJU"
+		#                 "UG9rYnNPMm4KTUMrakZYTGNYSnRPbjJnMUg5UFYvRWZTSzBRRjBZT1JKVk5sazd1TnRrMWZaVGtE"
+		#                 "U3QxS2ovNGp0b0pnRkh2Ygp6MzJURUxxWGJFK0lDTGhLc1U1SjFvbUNyV1QzNkNOSGZiWkhvTkZX"
+		#                 "SVB1Z1B5NDlTdDFtYmRybzNWWXNJdDE5ClBBb0xPMHFtSW9PREdjMHQzZGppamRIZkhmTi9nZ0JE"
+		#                 "bkliQklxZUcxMjZ6QUs2NFhLcVdTVHIzMUlYaHRsY04KMmJvekhkdEFRNWNWcC9uMkRmTTdiMUF6"
+		#                 "VVFiZ1BkeTk0ZXRkbFZpU0MzcDJnNzR4ZEFnazZkdUdTMmFUd1JsZQpzMlk9Ci0tLS0tRU5EIENF"
+		#                 "UlRJRklDQVRFLS0tLS0K" )
+
+		# sudo podman run -d --name coredns --net host -v /config/coredns/Corefile:/Corefile -v /config/coredns/4.nasa:/4.nasa coredns/coredns
+		# # == OR set coredns conf == #
+		# #sudo podman run -d --name coredns --net host -v /config/coredns/Corefile:/etc/coredns/Corefile coredns/coredns -conf /etc/coredns/Corefile
+
+		commit
+		save
+	SHELL
+end
 
   config.vm.define "ldapmaster" do |ldapm|
-		# ldapm.vm.hostname = "ldapmaster.nctu.cs"
-		# ldapm.vm.hostname = "ldapprovider.1.nasa"
 		ldapm.vm.hostname = "ldap.4.nasa"
-		ldapm.vm.network :private_network, ip: "10.113.0.2"
+		ldapm.vm.network :private_network, auto_config: false, mac: "000000000002", virtualbox__intnet: "intnet1"
 		ldapm.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh"
 		ldapm.vm.network :forwarded_port, guest: 389, host: 389
 	end
 
-#   config.vm.define "ldapslave" do |ldaps|
-# 		# ldaps.vm.hostname = "ldapslave.nctu.cs"
-# 		ldaps.vm.hostname = "ldapconsumer.1.nasa"
-# 		ldaps.vm.network :private_network, ip: "10.113.0.3"
-# 		ldaps.vm.network :forwarded_port, guest: 22, host: 2223, id: "ssh"
-# 	end
-
-#   config.vm.define "ldapproxy1" do |ldapp1|
-# 		ldapp1.vm.hostname = "ldapproxy1.nctu.cs"
-# 		ldapp1.vm.network :private_network, ip: "10.113.0.4"
-# 		ldapp1.vm.network :forwarded_port, guest: 22, host: 2224, id: "ssh"
-# 	end
-
-#   config.vm.define "ldapproxy2" do |ldapp2|
-# 		ldapp2.vm.hostname = "ldapproxy2.nctu.cs"
-# 		ldapp2.vm.network :private_network, ip: "10.113.0.5"
-# 		ldapp2.vm.network :forwarded_port, guest: 22, host: 2225, id: "ssh"
-# 	end
-
   config.vm.define "ldapclient" do |ldapc|
-		# ldapc.vm.hostname = "ldapclient.nctu.cs"
 		ldapc.vm.hostname = "workstation.4.nasa"
-		ldapc.vm.network :private_network, ip: "10.113.0.6"
+		ldapc.vm.network :private_network, auto_config: false, mac: "000000000006", virtualbox__intnet: "intnet1"
 		ldapc.vm.network :forwarded_port, guest: 22, host: 2226, id: "ssh"
 		ldapc.vm.provider "virtualbox" do |vc|
 			vc.gui = false
 			vc.memory = "250"
 			vc.cpus   = "1"
-			vc.customize ['modifyvm', :id, '--nicpromisc1', 'allow-all']
 		  end
 	end
 
