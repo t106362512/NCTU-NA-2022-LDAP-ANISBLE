@@ -9,7 +9,7 @@ olcRootPW: `slappasswd -s MYPASSWD`
 
 
 # Change user password
-ldappasswd -xZZ -H ldap://ldap.4.nasa -D "uid=stu1,ou=People,dc=4,dc=nasa" -w MYPASSWD -s MY@PASSW
+ldappasswd -xZZ -H ldap://ldap.4.nasa -D "uid=stu4,ou=People,dc=4,dc=nasa" -w MYPASSWD -s MY@PASSW
 
 
 # Change PublicKey
@@ -26,7 +26,7 @@ sshPublicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDhhgWcdaP64XsL2R3cyTnE+UCnug
 
 # Change PublicKey by admin
 echo '
-dn: uid=stu1,ou=People,dc=4,dc=nasa
+dn: uid=stu4,ou=People,dc=4,dc=nasa
 changetype: modify
 delete: sshPublicKey
 -
